@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles.css">
-    <title> Conversor </title>
+    <title> Conversor De Moedas </title>
 
 </head>
 
@@ -17,23 +17,23 @@
     <main>
         <label for="">Converter de
 
-            <select id="">
+            <select id="selecionar-moeda-superior">
 
-                <option value="">R$ Real brasileiro</option>
-            <!--<option value="">US$ Dólar americano</option>
-                <option value="">€ Euro</option>
-                <option value="">£ Libra</option>
-                <option value="">Bitcoin</option> -->
+                <option value="BRL">R$ Real brasileiro</option>
+                <option value="USD">US$ Dólar americano</option>
+                <option value="EUR">€ Euro</option>
+                <option value="GBP">£ Libra</option>
+                <option value="BTC">Bitcoin</option> 
 
             </select>
         </label>
 
         <label for="">Converter para
 
-            <select id="selecionar-moeda">
+            <select id="selecionar-moeda-infeior">
 
                 <option value="USD">US$ Dólar americano</option>
-            <!--<option value="BRL">R$ Real brasileiro</option>-->
+                <option value="BRL">R$ Real brasileiro</option>
                 <option value="EUR">€ Euro</option>
                 <option value="GBP">£ Libra</option>
                 <option value="BTC">Bitcoin</option>
@@ -50,8 +50,8 @@
         <section>
 
             <div class="moedas">
-                <img src="../assets/real.png" alt="img-brazil">
-                <p id="moeda-logo">Real</p>
+                <img id="Bandeira-superior" src="../assets/real.png" alt="img-brazil">
+                <p id="moeda-nome-superior">Real</p>
                 <p class="ValorConverter">R$ 0,00</p>
             </div>
 
