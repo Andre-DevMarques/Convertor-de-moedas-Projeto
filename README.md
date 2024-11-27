@@ -8,3 +8,5 @@
   <li><img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white"></li>
   <li><img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"></li>
 </ul>
+<p>Última atualização</p>
+<p>27/11/2024</p>
