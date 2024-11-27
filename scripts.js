@@ -1,6 +1,7 @@
 let convertButton = document.querySelector("#convert-Button")
-let selecionaMoeda = document.querySelector("#selecionar-moeda-infeior")
 let selecionaMoedaSuperior = document.querySelector("#selecionar-moeda-superior")
+let selecionaMoeda = document.querySelector("#selecionar-moeda-infeior")
+
 
 convertButton.addEventListener("click", convertValores)
 
