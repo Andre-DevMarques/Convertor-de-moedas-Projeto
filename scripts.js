@@ -1,217 +1,96 @@
-let convertButton = document.querySelector("#convert-Button")
-let selecionaMoedaSuperior = document.querySelector("#selecionar-moeda-superior")
-let selecionaMoeda = document.querySelector("#selecionar-moeda-infeior")
+let convertButton = document.querySelector("#convert-Button");
+let selecionaMoedaSuperior = document.querySelector("#selecionar-moeda-superior");
+let selecionaMoedaInferior = document.querySelector("#selecionar-moeda-infeior");
 
-
-convertButton.addEventListener("click", convertValores)
-
-function convertValores() {
-
-    let inputCurrencyValue = document.querySelector("#input-currency").value
-    //dentro do input//
-
-    let valorParaConverter = document.querySelector(".ValorConverter")
-    let valorConvertido = document.querySelector(".Valorconvertido")
-    //esses dois são da parte de baixo
-
-    let realToday = 1
-    let euroToday = 6.06
-    let dolarToday = 5.80
-    let libraToday = 7.29
-    let bitcoinToday = 556790.72
-    // valor do das moedas
-
-    if (selecionaMoeda.value == "USD") {
-        //se o meu select estiver com o valor "USD" ele ira fazer isso
-        valorConvertido.innerHTML = new Intl.NumberFormat("en-US", {
-
-            style: "currency",
-            currency: "USD"
-
-        }).format(inputCurrencyValue / dolarToday)
-
+// Função para buscar taxas de câmbio
+async function fetchTaxasDeCambio() {
+    const url = `https://api.exchangerate-api.com/v4/latest/${selecionaMoedaSuperior.value}`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.rates;
+    } catch (error) {
+        alert("Erro ao buscar taxas de câmbio. Tente novamente mais tarde.");
+        console.error(error);
+        return null;
     }
-
-    if (selecionaMoedaSuperior.value == "USD") {
-        //se o meu select estiver com o valor "USD" ele ira fazer isso
-        valorParaConverter.innerHTML = new Intl.NumberFormat("en-US", {
-
-            style: "currency",
-            currency: "USD"
-
-        }).format(inputCurrencyValue / dolarToday)
-
-    }
-
-    if (selecionaMoeda.value == "EUR") {
-        //se o meu select estiver com o valor "EUR" ele ira fazer isso
-
-        valorConvertido.innerHTML = new Intl.NumberFormat("de-DE", {
-
-            style: "currency",
-            currency: "EUR"
-
-        }).format(inputCurrencyValue / euroToday)
-
-    }
-
-    if (selecionaMoedaSuperior.value == "EUR") {
-        //se o meu select estiver com o valor "EUR" ele ira fazer isso
-
-        valorParaConverter.innerHTML = new Intl.NumberFormat("de-DE", {
-
-            style: "currency",
-            currency: "EUR"
-
-        }).format(inputCurrencyValue / euroToday)
-
-    }
-
-    if (selecionaMoeda.value == "GBP") {
-        //se o meu select estiver com o valor "USD" ele ira fazer isso
-        valorConvertido.innerHTML = new Intl.NumberFormat("en-GB", {
-
-            style: "currency",
-            currency: "GBP"
-
-        }).format(inputCurrencyValue / libraToday)
-
-    }
-
-    if (selecionaMoedaSuperior.value == "GBP") {
-        //se o meu select estiver com o valor "USD" ele ira fazer isso
-        valorParaConverter.innerHTML = new Intl.NumberFormat("en-GB", {
-
-            style: "currency",
-            currency: "GBP"
-
-        }).format(inputCurrencyValue / libraToday)
-
-    }
-
-    if (selecionaMoeda.value == "BTC") {
-        // Conversão para Bitcoin com precisão de 8 casas decimais
-        valorConvertido.innerHTML = (inputCurrencyValue / bitcoinToday).toFixed(8) + " BTC";
-    
-    }
-
-    if (selecionaMoedaSuperior.value == "BTC") {
-        // Conversão para Bitcoin com precisão de 8 casas decimais
-        valorParaConverter.innerHTML = (inputCurrencyValue / bitcoinToday).toFixed(8) + " BTC";
-    
-    }
-
-    if (selecionaMoeda.value == "BRL") {
-        //se o meu select estiver com o valor "USD" ele ira fazer isso
-        valorParaConverter.innerHTML = new Intl.NumberFormat("pt-BR", {
-
-            style: "currency",
-            currency: "BRL"
-
-        }).format(inputCurrencyValue / realToday)
-    }    
-
-    if (selecionaMoedaSuperior.value == "BRL") {
-        //se o meu select estiver com o valor "USD" ele ira fazer isso
-        valorParaConverter.innerHTML = new Intl.NumberFormat("pt-BR", {
-
-            style: "currency",
-            currency: "BRL"
-
-        }).format(inputCurrencyValue / realToday)
-    }    
-
 }
 
-function trocarMoedaInferior(){
-    //aqui é aonde troca o nome e as bandeiras
+// Função para converter os valores
+async function convertValores() {
+    let inputCurrencyValue = document.querySelector("#input-currency").value;
+    inputCurrencyValue = parseFloat(inputCurrencyValue.replace(",", "."));
 
-    let moedaNome = document.querySelector("#moeda-logo-final")
-    let moedaBandeira = document.querySelector("#america-Bandeira")
-
-    if (selecionaMoeda.value == "BRL"){
-
-        moedaNome.innerHTML = "Real "
-        moedaBandeira.src = "../assets/real.png"
-
+    if (isNaN(inputCurrencyValue)) {
+        alert("Por favor, insira um valor válido.");
+        return;
     }
 
-    if (selecionaMoeda.value == "USD"){
+    let valorParaConverter = document.querySelector(".ValorConverter");
+    let valorConvertido = document.querySelector(".Valorconvertido");
 
-        moedaNome.innerHTML = "Dólar americano"
-        moedaBandeira.src = "../assets/dolar.png"
+    // Busca as taxas de câmbio
+    const taxas = await fetchTaxasDeCambio();
+    if (!taxas) return;
 
-    }
+    let moedaInferior = selecionaMoedaInferior.value;
+    let taxaDeCambio = taxas[moedaInferior];
 
-    if (selecionaMoeda.value == "EUR"){
+    // Realiza a conversão
+    let valorEmMoedaInferior = (inputCurrencyValue * taxaDeCambio).toFixed(2);
 
-        moedaNome.innerHTML = "Euro"
-        moedaBandeira.src = "../assets/euro.png"
+    // Atualiza o valor convertido na tela
+    valorConvertido.innerHTML = new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: moedaInferior
+    }).format(valorEmMoedaInferior);
 
-    }
-
-    if (selecionaMoeda.value == "GBP"){
-
-        moedaNome.innerHTML = "Libra"
-        moedaBandeira.src = "../assets/libra.png"
-
-    }
-
-    if (selecionaMoeda.value == "BTC"){
-
-        moedaNome.innerHTML = "Bitcoin"
-        moedaBandeira.src = "../assets/bitcoin.png"
-
-    }
-
-    convertValores()
+    // Atualiza o valor que está sendo convertido
+    valorParaConverter.innerHTML = new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: selecionaMoedaSuperior.value
+    }).format(inputCurrencyValue);
 }
 
-selecionaMoeda.addEventListener("change", trocarMoedaInferior)
+// Função para atualizar bandeiras e nomes das moedas
+function trocarMoeda() {
+    let moedaNomeSuperior = document.querySelector("#moeda-nome-superior");
+    let moedaBandeiraSuperior = document.querySelector("#Bandeira-superior");
+    let moedaNomeInferior = document.querySelector("#moeda-logo-final");
+    let moedaBandeiraInferior = document.querySelector("#america-Bandeira");
 
-function trocarMoedaSuperior(){
+    moedaNomeSuperior.innerHTML = selecionarNomeMoeda(selecionaMoedaSuperior.value);
+    moedaBandeiraSuperior.src = selecionarBandeira(selecionaMoedaSuperior.value);
+    moedaNomeInferior.innerHTML = selecionarNomeMoeda(selecionaMoedaInferior.value);
+    moedaBandeiraInferior.src = selecionarBandeira(selecionaMoedaInferior.value);
 
-    let NomeMoedaSuperior = document.querySelector("#moeda-nome-superior")
-    let BandeiraMoedaSuperior =document.querySelector("#Bandeira-superior")
-
-    if (selecionaMoedaSuperior.value == "BRL"){
-
-        NomeMoedaSuperior.innerHTML = "Real"
-        BandeiraMoedaSuperior.src = "../assets/real.png"
-
-    }
-
-
-    if (selecionaMoedaSuperior.value == "USD"){
-
-        NomeMoedaSuperior.innerHTML = "Dólar americano"
-        BandeiraMoedaSuperior.src = "../assets/dolar.png"
-
-    }
-
-    if (selecionaMoedaSuperior.value == "EUR"){
-
-        NomeMoedaSuperior.innerHTML = "Euro"
-        BandeiraMoedaSuperior.src = "../assets/euro.png"
-
-    }
-
-    if (selecionaMoedaSuperior.value == "GBP"){
-
-        NomeMoedaSuperior.innerHTML = "Libra"
-        BandeiraMoedaSuperior.src = "../assets/libra.png"
-
-    }
-
-    if (selecionaMoedaSuperior.value == "BTC"){
-
-        NomeMoedaSuperior.innerHTML = "Bitcoin"
-        BandeiraMoedaSuperior.src = "../assets/bitcoin.png"
-
-    }
-
-    convertValores()
-
+    convertValores();
 }
 
-selecionaMoedaSuperior.addEventListener("change", trocarMoedaSuperior)    
+// Funções auxiliares para nomes e bandeiras
+function selecionarNomeMoeda(moeda) {
+    const nomes = {
+        BRL: "Real",
+        USD: "Dólar americano",
+        EUR: "Euro",
+        GBP: "Libra",
+        BTC: "Bitcoin"
+    };
+    return nomes[moeda];
+}
+
+function selecionarBandeira(moeda) {
+    const bandeiras = {
+        BRL: "../assets/real.png",
+        USD: "../assets/dolar.png",
+        EUR: "../assets/euro.png",
+        GBP: "../assets/libra.png",
+        BTC: "../assets/bitcoin.png"
+    };
+    return bandeiras[moeda];
+}
+
+// Adicionando os eventos
+convertButton.addEventListener("click", convertValores);
+selecionaMoedaSuperior.addEventListener("change", trocarMoeda);
+selecionaMoedaInferior.addEventListener("change", trocarMoeda);
